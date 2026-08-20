@@ -1,0 +1,306 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Dark base */
+  --color-ink-950: #0f0e14;
+  --color-ink-900: #16151d;
+  --color-ink-800: #1e1d28;
+  --color-ink-700: #2a2937;
+  --color-ink-600: #3d3b4f;
+  --color-ink-500: #5d5a75;
+
+  /* Light */
+  --color-bone: #eeebf5;
+  --color-bone-dim: #c4c0d2;
+  --color-bone-mute: #8b87a0;
+
+  /* Ring spectrum */
+  --color-spectrum-rose: #ff2d6f;
+  --color-spectrum-amber: #ff9b2f;
+  --color-spectrum-lemon: #f7e04d;
+  --color-spectrum-mint: #3fe08a;
+  --color-spectrum-cyan: #2fc9ff;
+  --color-spectrum-violet: #7b5cff;
+}
+
+/*
+ * Semantic tokens. Components never reach for a palette colour directly, so a
+ * theme swap is a matter of redefining these six.
+ */
+:root {
+  color-scheme: dark;
+
+  /*
+   * The ring palette as a CSS list. First and last match so a conic gradient
+   * closes on itself. Redefine it and every ring on the page follows.
+   */
+  --b-spectrum: var(--color-spectrum-rose), var(--color-spectrum-amber),
+    var(--color-spectrum-lemon), var(--color-spectrum-mint),
+    var(--color-spectrum-cyan), var(--color-spectrum-violet),
+    var(--color-spectrum-rose);
+
+  /*
+   * Field heights. Global because two components measure by them: the field
+   * itself, and the field list, which starts at its trigger's side tips — half a
+   * height above its bottom edge. Every other grid is local to its component.
+   */
+  --b-field-height-xs: 30px;
+  --b-field-height-sm: 36px;
+  --b-field-height-md: 46px;
+  --b-field-height-lg: 56px;
+  --b-field-height-xl: 66px;
+
+  /* One spectrum pass. The named speeds components take are these three. */
+  --b-speed-slow: 9s;
+  --b-speed-normal: 5s;
+  --b-speed-fast: 2.5s;
+
+  --b-surface: var(--color-ink-950);
+  --b-elevated: var(--color-ink-900);
+  --b-raised: var(--color-ink-800);
+  --b-danger: #ff4d4d;
+  --b-line: var(--color-ink-600);
+  --b-line-strong: var(--color-ink-500);
+  --b-text: var(--color-bone);
+  --b-muted: var(--color-bone-mute);
+
+  /*
+   * Semantic roles. Each one is a fill plus the colour that reads on it.
+   * Destructive is a red with no purple left in it: validation has to be told
+   * apart from the accent at a glance, whatever the accent happens to be.
+   */
+  /* Colour roles, taken from the ring spectrum so the family stays one. */
+  /* Lightest tone of the theme: the frame line, never the text colour. */
+  --b-highlight: var(--color-bone);
+  /*
+   * The pair of lines a rainbow band is bracketed by, and the one role that
+   * cannot be shared with any other: they have to disappear into the plate on
+   * a light page and still be there to see on a dark one, so on light they are
+   * the plate itself and on dark they are the quiet line.
+   */
+  --b-band-line: var(--color-ink-600);
+  /*
+   * What a shape casts. A shadow is the ground seen through less light, and on
+   * a dark ground there is none left to take away — so what lifts a shape here
+   * is a little light spilled off its edge instead. On a light page it stays
+   * exactly what it always was.
+   */
+  /*
+   * Component fill. Three layers: a diagonal inset light (start brighter, end
+   * darker), a centre wash that fades the fold out, and the fold itself.
+   */
+  /*
+   * The same plate held to a fraction of itself: the fold across the middle
+   * that gives a button its thickness, the diagonal light running along it and
+   * the body underneath — thin enough to see the page through.
+   *
+   * Its own value rather than an opacity laid over `--b-fill`: that one is
+   * opaque by construction, and fading the whole stack would fade the fold out
+   * along with the body, which is exactly the part worth keeping.
+   */
+  --b-fill-glass:
+    linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0.1) 0%,
+      transparent 40%,
+      transparent 64%,
+      rgb(255 255 255 / 0.07) 100%
+    );
+  --b-fill:
+    linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0.05) 0%,
+      transparent 35%,
+      rgb(0 0 0 / 0.22) 100%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      #1c1b25 42%,
+      #1c1b25 58%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, #1c1b25 0 50%, #141320 50% 100%);
+  --b-fill-hover:
+    linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0.07) 0%,
+      transparent 35%,
+      rgb(0 0 0 / 0.2) 100%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      #25242f 42%,
+      #25242f 58%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, #25242f 0 50%, #1a1926 50% 100%);
+
+  /* Frame geometry, one set for the whole library. */
+  --b-stroke: 1.4px;
+  --b-band: 1px;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --b-surface: #f6f5fa;
+  --b-elevated: #ffffff;
+  --b-raised: #edebf4;
+  --b-danger: #d92020;
+  --b-line: #d7d4e3;
+  --b-line-strong: #a9a5bd;
+  --b-text: #17161f;
+  --b-muted: #6b6880;
+  --b-highlight: #ffffff;
+  --b-band-line: #ffffff;
+  /*
+   * The same plate held to a fraction of itself: the fold across the middle
+   * that gives a button its thickness, the diagonal light running along it and
+   * the body underneath — thin enough to see the page through.
+   *
+   * Its own value rather than an opacity laid over `--b-fill`: that one is
+   * opaque by construction, and fading the whole stack would fade the fold out
+   * along with the body, which is exactly the part worth keeping.
+   */
+  --b-fill-glass:
+    linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0.55) 0%,
+      rgb(255 255 255 / 0.16) 40%,
+      rgb(255 255 255 / 0.16) 64%,
+      rgb(255 255 255 / 0.42) 100%
+    );
+  --b-fill:
+    linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0.9) 0%,
+      transparent 35%,
+      rgb(0 0 0 / 0.045) 100%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      #ffffff 42%,
+      #ffffff 58%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, #ffffff 0 50%, #eceaf3 50% 100%);
+  --b-fill-hover:
+    linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0.95) 0%,
+      transparent 35%,
+      rgb(0 0 0 / 0.03) 100%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      #ffffff 42%,
+      #ffffff 58%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, #ffffff 0 50%, #f4f2fa 50% 100%);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+
+    --b-surface: #f7f5f1;
+    --b-elevated: #ffffff;
+    --b-raised: #f0ede7;
+    --b-danger: #d92020;
+    --b-line: #d8d3ca;
+    --b-line-strong: #b4ada1;
+    --b-text: #17161a;
+    --b-muted: #6f6b64;
+    --b-highlight: #ffffff;
+    --b-band-line: #ffffff;
+
+    /* the roles darken as well, or they would be read against white */
+    --b-fill-glass:
+      linear-gradient(
+        105deg,
+        rgb(255 255 255 / 0.55) 0%,
+        rgb(255 255 255 / 0.16) 40%,
+        rgb(255 255 255 / 0.16) 64%,
+        rgb(255 255 255 / 0.42) 100%
+      );
+    --b-fill:
+    linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0.9) 0%,
+      transparent 35%,
+      rgb(0 0 0 / 0.045) 100%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      #ffffff 42%,
+      #ffffff 58%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, #ffffff 0 50%, #eceaf3 50% 100%);
+    --b-fill-hover:
+    linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0.95) 0%,
+      transparent 35%,
+      rgb(0 0 0 / 0.03) 100%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      #ffffff 42%,
+      #ffffff 58%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, #ffffff 0 50%, #f4f2fa 50% 100%);
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--b-surface);
+  color: var(--b-text);
+  font-family:
+    'Inter',
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Contour of the signature shape as a utility class. It cannot live in a
+ * variable: var() inside a custom property resolves where the property is
+ * declared, while every layer needs its own --frame-layer. A class, on the
+ * other hand, resolves against the element it lands on.
+ */
+.b-clip {
+  clip-path: polygon(
+    calc(var(--frame-layer, 0px) * 1.4142) 50%,
+    calc(var(--frame-slant) + var(--frame-layer, 0px) * 0.4142)
+      var(--frame-layer, 0px),
+    calc(100% - var(--frame-slant) - var(--frame-layer, 0px) * 0.4142)
+      var(--frame-layer, 0px),
+    calc(100% - var(--frame-layer, 0px) * 1.4142) 50%,
+    calc(100% - var(--frame-slant) - var(--frame-layer, 0px) * 0.4142)
+      calc(100% - var(--frame-layer, 0px)),
+    calc(var(--frame-slant) + var(--frame-layer, 0px) * 0.4142)
+      calc(100% - var(--frame-layer, 0px))
+  );
+}
+
+
+/*
+ * Refraction for glass surfaces. The filter is a data URI rather than a mounted
+ * <svg>: nothing lands in the DOM and any component can reach it by name.
+ */
+:root {
+
+}
