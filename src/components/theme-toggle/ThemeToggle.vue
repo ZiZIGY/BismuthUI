@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue';
   import { useColorMode } from '@vueuse/core';
-  import { Icon } from '@iconify/vue';
   import BButton from '../button/Button.vue';
   import type { TSize } from '../../theme/types';
 
@@ -22,10 +21,14 @@
   const isDark = computed(() => mode.value === 'dark');
 
   /*
-   * Plain icons on purpose: an animated one only shows a frozen frame while the
-   * view transition is running, since the page is showing snapshots then.
+   * Plain shapes on purpose: an animated icon only shows a frozen frame while
+   * the view transition is running, since the page is showing snapshots then.
+   *
+   * Drawn here rather than pulled from an icon set. Two glyphs are not worth a
+   * dependency, and a static import of one is a hard requirement on everybody
+   * who installs the library — including the majority who never render this
+   * component.
    */
-  const icon = computed(() => (isDark.value ? 'lucide:moon' : 'lucide:sun'));
 
   /** Rhombus that covers the viewport from (x, y): half-diagonal r. */
   function rhombus(x: number, y: number, reach: number) {
@@ -104,10 +107,32 @@
       :ripple="{ center: true }"
       @click="toggle"
     >
-      <Icon
-        :icon
+      <svg
         class="size-[1.1em]"
-      />
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path
+          v-if="isDark"
+          d="M20.4 14.9A9 9 0 1 1 9.1 3.6a7 7 0 0 0 11.3 11.3Z"
+        />
+        <template v-else>
+          <circle
+            cx="12"
+            cy="12"
+            r="4"
+          />
+          <path
+            d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20
+              12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+          />
+        </template>
+      </svg>
     </BButton>
   </div>
 </template>

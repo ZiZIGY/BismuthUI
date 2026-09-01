@@ -13,8 +13,8 @@ import { BButton, BSelect } from 'bismuth-ui';
 import 'bismuth-ui/style.css';
 ```
 
-Peers: `vue` ≥ 3.5, `@vueuse/core`, `motion-v`. `@iconify/vue` is optional and
-only wanted by `BThemeToggle`.
+Peers: `vue` ≥ 3.5, `@vueuse/core`, `motion-v` — and nothing else. Icons are
+drawn inline; the library brings no icon set of its own.
 
 ## Theming
 

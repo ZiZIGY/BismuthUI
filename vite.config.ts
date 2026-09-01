@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => {
              * Two copies of Vue in one page is a broken page, and the same
              * goes for motion's animation registry and VueUse's effect scopes.
              */
-            external: ['vue', '@vueuse/core', 'motion-v', '@iconify/vue'],
+            external: ['vue', '@vueuse/core', 'motion-v'],
             output: { globals: { vue: 'Vue' } },
           },
           sourcemap: true,
