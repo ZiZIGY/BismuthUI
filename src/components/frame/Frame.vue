@@ -148,6 +148,7 @@
    * as a rectangle. Clamped, the octagon simply loses its edges and becomes the
    * hexagon, then the rhombus, which is what those shapes are anyway.
    */
+  .b-frame--blunt .b-frame__pane,
   .b-frame--blunt .b-frame__line,
   .b-frame--blunt .b-frame__ring,
   .b-frame--blunt .b-frame__inner,
@@ -174,6 +175,7 @@
   }
 
   /* a rhombus has no flat edges, so both vertices follow the bisector */
+  .b-frame--rhombus .b-frame__pane,
   .b-frame--rhombus .b-frame__line,
   .b-frame--rhombus .b-frame__ring,
   .b-frame--rhombus .b-frame__inner,
@@ -262,10 +264,42 @@
     --frame-layer: var(--frame-fill-inset);
 
     content: '';
-    background: var(--frame-fill, var(--b-elevated));
+    /*
+     * The thickness seen edge-on, over whatever colour the plate was given.
+     * Two layers in one declaration rather than a pseudo-element, since the
+     * fill layer has none to spare — it is a pseudo-element itself.
+     */
+    background:
+      linear-gradient(
+        90deg,
+        var(--frame-edge, rgb(0 0 0 / 0.05)) 0,
+        color-mix(
+            in oklab,
+            var(--frame-edge, rgb(0 0 0 / 0.05)) 34%,
+            transparent
+          )
+          calc(var(--frame-edge-reach, 6em) * 0.4),
+        transparent var(--frame-edge-reach, 6em),
+        transparent calc(100% - var(--frame-edge-reach, 6em)),
+        color-mix(
+            in oklab,
+            var(--frame-edge, rgb(0 0 0 / 0.05)) 34%,
+            transparent
+          )
+          calc(100% - var(--frame-edge-reach, 6em) * 0.4),
+        var(--frame-edge, rgb(0 0 0 / 0.05)) 100%
+      ),
+      var(--frame-fill, var(--b-elevated));
     transition: background 0.2s ease;
   }
 
+  /*
+   * With no band there is no inner line either, so both the plate and the pane
+   * meet the contour directly. Left at the full inset the pane stops short of
+   * it and the line layer — a filled silhouette — shows through the gap as a
+   * dark strip along the top and bottom edges.
+   */
+  .b-frame:not(.b-frame--band) .b-frame__pane,
   .b-frame:not(.b-frame--band)::after {
     --frame-layer: var(--frame-stroke, var(--b-stroke, 1.6px));
   }
@@ -354,6 +388,51 @@
         in oklab,
         var(--frame-sheen, var(--b-highlight)) var(--frame-sheen-strength, 20%),
         transparent
+      );
+  }
+
+  /*
+   * The thickness seen edge-on: darker where the pane is deepest, which on a
+   * shape this wide is the two ends. A gradient does it rather than a shadow,
+   * because a spread inset shadow follows the border box and would band the
+   * top and bottom as well — here the width is what matters and the height is
+   * a few pixels, so shading it top to bottom only greys the whole thing.
+   *
+   * The reach is a length, not a share of the width: a switch is a third the
+   * width of a field, and a percentage would eat half of it while barely
+   * touching the field. In `em` it stays the same visual depth on both.
+   *
+   * A stop partway in, at a third of the strength: two stops make a straight
+   * ramp, and a straight ramp reads as a wedge with a visible end. Bending it
+   * puts most of the fall in the first stretch and lets the rest die out.
+   *
+   * Painted over the pane's own sheen and under the contour, which is what
+   * markup order gives — the pane is one layer, so order is the only depth
+   * there is.
+   */
+  .b-frame--glass .b-frame__pane::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        90deg,
+        var(--frame-edge, rgb(0 0 0 / 0.05)) 0,
+        color-mix(
+            in oklab,
+            var(--frame-edge, rgb(0 0 0 / 0.05)) 34%,
+            transparent
+          )
+          calc(var(--frame-edge-reach, 6em) * 0.4),
+        transparent var(--frame-edge-reach, 6em),
+        transparent calc(100% - var(--frame-edge-reach, 6em)),
+        color-mix(
+            in oklab,
+            var(--frame-edge, rgb(0 0 0 / 0.05)) 34%,
+            transparent
+          )
+          calc(100% - var(--frame-edge-reach, 6em) * 0.4),
+        var(--frame-edge, rgb(0 0 0 / 0.05)) 100%
       );
   }
 

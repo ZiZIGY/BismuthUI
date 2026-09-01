@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { motion } from 'motion-v';
-  import BFrame from '../frame/Frame.vue';
   import { vRipple } from '../../directives/ripple';
   import { SPRING_SOFT } from '../../theme/motion';
 
@@ -50,9 +49,7 @@
       <span
         v-if="selected"
         class="b-option__ring"
-      >
-        <BFrame rhombus />
-      </span>
+      />
     </span>
 
     <slot />
@@ -79,6 +76,12 @@
     /* stated, not inherited from the list: a row fills whatever holds it */
     width: 100%;
     height: var(--option-height);
+    /*
+     * One line, always. The row is a fixed height, so a label long enough to
+     * wrap breaks out of it and runs into the row beneath — a menu is sized by
+     * its widest entry, not by cutting the entries down.
+     */
+    white-space: nowrap;
     padding-inline: calc(var(--option-slant) + var(--option-pad));
     color: var(--b-text);
     text-align: left;
@@ -139,11 +142,24 @@
    * as if it were not there. Choosing widens it, and the text moves over
    * instead of jumping.
    */
+  /*
+   * The press wave is kept from counting towards the list's scroll. A wave is
+   * a square wide enough to reach the furthest corner from wherever it was
+   * struck, so it hangs well outside the row — harmless to look at, since the
+   * row's own `clip-path` shapes it, but a clip-path does not shrink the
+   * scrollable overflow the way it shrinks the painting. The scroller was
+   * counting it and offering a screen of emptiness below the last row for as
+   * long as the wave lived.
+   *
+   * `overflow` does shrink it, and costs nothing here: it cuts to the layer's
+   * rectangle, which is the row's own box, and the bevel is then taken out of
+   * that by the row above it. What is drawn is unchanged.
+   */
+  .b-option .b-ripple {
+    overflow: hidden;
+  }
+
   .b-option__mark {
-    --frame-stroke: 1px;
-    --frame-band: 1px;
-    --frame-line: var(--b-band-line);
-    --frame-fill: var(--b-elevated);
     position: relative;
     flex: none;
     width: 0;
@@ -160,17 +176,23 @@
   }
 
   /*
-   * It waits out the widening, then grows into the room made for it. Its own
-   * size is kept while the cell is still narrow — stretched across it, the ring
-   * would be squeezed flat and read as a sliver. `@starting-style` is what it
-   * grows from, since it is here only for the row that is chosen.
+   * The mark a chosen row carries: a square turned 45deg and filled with the
+   * accent, which is the figure the handle and the slider's step marks are cut
+   * from. It was a frame before — contour, band, fill — and the band made it a
+   * rainbow, which is more than a row has to say.
+   *
+   * It waits out the widening, then grows into the room made for it.
+   * `@starting-style` is what it grows from, since it is here only for the row
+   * that is chosen.
    */
   .b-option__ring {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: var(--option-marker);
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--option-marker) * 0.58);
+    height: calc(var(--option-marker) * 0.58);
+    background: var(--option-accent);
+    transform: translate(-50%, -50%) rotate(45deg);
     transition:
       opacity 0.18s ease 0.18s,
       transform 0.24s cubic-bezier(0.2, 0.8, 0.3, 1) 0.18s;
@@ -179,7 +201,7 @@
   @starting-style {
     .b-option__ring {
       opacity: 0;
-      transform: scale(0);
+      transform: translate(-50%, -50%) rotate(45deg) scale(0);
     }
   }
 

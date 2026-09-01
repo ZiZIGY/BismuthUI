@@ -64,6 +64,8 @@ export const buttonVariants = cva(
         ghost: [
           '[--frame-line:transparent]',
           '[--frame-fill:transparent]',
+          /* nothing is painted, so there is no thickness to shade either */
+          '[--frame-edge:transparent]',
           'text-(--b-text)',
           'hover:[--frame-fill:color-mix(in_oklab,var(--b-text)_9%,transparent)]',
         ],

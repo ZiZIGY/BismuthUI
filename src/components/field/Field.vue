@@ -120,7 +120,11 @@
     </div>
 
     <span class="b-field__box">
-      <BFrame v-if="variant === 'frame'" />
+      <BFrame
+        v-if="variant === 'frame'"
+        :band="false"
+        :glow="false"
+      />
 
       <label
         v-if="label"
@@ -231,28 +235,19 @@
    * it as leaving would fold the caption away and move the field out from under
    * the pointer mid-click.
    */
-  .b-field:focus-within {
-    --frame-line: var(--field-accent);
-    --field-leader: var(--field-accent);
-  }
-
   /*
-   * No band. The frame keeps the band machinery collapsed at rest and never
-   * opens it: what marks a focused field is its contour taking the accent,
-   * which is what every other control here does.
+   * The contour takes the accent held back towards the resting line, not the
+   * accent itself. Whole, it is the colour of writing — near black on a pale
+   * page — and a hairline that jumps from a quiet lilac to that reads as a
+   * shadow appearing along the top and bottom edges rather than as a field
+   * coming alive. Mixed, it is plainly stronger than at rest and still a line.
    *
-   * Addressed to its own frame, or a button sitting in a slot would answer
-   * along with the field.
+   * The caption and the leader take it whole: they are writing, and writing
+   * wants the text colour.
    */
-  .b-field > .b-field__box > .b-frame {
-    --frame-band: 0px;
-    --frame-inner-stroke: 0px;
-    --frame-glow: 0;
-  }
-
-  .b-field > .b-field__box > .b-frame > .b-frame__ring,
-  .b-field > .b-field__box > .b-frame::before {
-    animation-play-state: paused;
+  .b-field:focus-within {
+    --frame-line: color-mix(in oklab, var(--field-accent) 45%, var(--b-line));
+    --field-leader: var(--field-accent);
   }
 
   /*
@@ -381,8 +376,11 @@
    * the stylesheet can see the condition: a row of its own is an addon in the
    * box, and `:has()` reads that where script would have to be told.
    *
-   * Every layer takes it, band and glow included: leave one on the hexagon and
-   * a focused textarea would wear a ring cutting out through its own corners.
+   * Every layer takes it, the pane and the glow included: leave one on the
+   * hexagon and a focused textarea would wear a ring cutting out through its
+   * own corners. The pane is named along with the rest so a glass field would
+   * take the shape too, though none asks for one: a field is written into, and
+   * a list opening behind a transparent one would read straight through it.
    *
    * The formula cannot move into a variable: var() inside a custom property
    * resolves on the element that declares it, while each layer needs its own
@@ -396,7 +394,7 @@
       )
     )
     > .b-frame
-    > :is(.b-frame__line, .b-frame__ring, .b-frame__inner),
+    > :is(.b-frame__pane, .b-frame__line, .b-frame__ring, .b-frame__inner),
   :is(
       .b-field--multiline .b-field__box,
       .b-field__box:has(

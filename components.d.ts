@@ -11,7 +11,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AnimatePresence: typeof import('motion-v')['AnimatePresence']
     Autocomplete: typeof import('./src/components/autocomplete/Autocomplete.vue')['default']
     Button: typeof import('./src/components/button/Button.vue')['default']
     Dropdown: typeof import('./src/components/dropdown/Dropdown.vue')['default']
@@ -22,7 +21,6 @@ declare module 'vue' {
     Loader: typeof import('./src/components/loader/Loader.vue')['default']
     Option: typeof import('./src/components/option/Option.vue')['default']
     OptionGroup: typeof import('./src/components/option/OptionGroup.vue')['default']
-    Prism: typeof import('./src/components/prism/Prism.vue')['default']
     Progress: typeof import('./src/components/progress/Progress.vue')['default']
     ScrollArea: typeof import('./src/components/scroll-area/ScrollArea.vue')['default']
     Scrollbar: typeof import('./src/components/scroll-area/Scrollbar.vue')['default']

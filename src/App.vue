@@ -88,6 +88,20 @@
   const group = ref<string | number>('');
   const groups = ['Металлоиды', 'Постпереходные', 'Халькогены', 'Пниктогены'];
   const traits = ref<(string | number)[]>(['Хрупкий']);
+  const many = ref<(string | number)[]>([
+    'Хрупкий',
+    'Диамагнетик',
+    'Низкая теплопроводность',
+    'Нетоксичный',
+  ]);
+  const traitList = [
+    'Хрупкий',
+    'Диамагнетик',
+    'Низкая теплопроводность',
+    'Нетоксичный',
+    'Кристаллический',
+    'Тяжёлый',
+  ];
   const note = ref('');
   const amount = ref('');
   const query = ref('');
@@ -568,6 +582,50 @@
           <template #value="{ option }">
             <span class="border border-(--b-line) px-2 py-0.5 text-xs">
               {{ option.label }}
+            </span>
+          </template>
+        </BSelect>
+
+        <BSelect
+          v-model="many"
+          multiple
+          :options="traitList"
+          label="Растёт в высоту"
+        >
+          <template #value="{ option }">
+            <span class="border border-(--b-line) px-2 py-0.5 text-xs">
+              {{ option.label }}
+            </span>
+          </template>
+        </BSelect>
+
+        <BSelect
+          v-model="many"
+          multiple
+          :options="traitList"
+          label="С потолком: max-height"
+          style="max-height: 4.5em"
+        >
+          <template #value="{ option }">
+            <span class="border border-(--b-line) px-2 py-0.5 text-xs">
+              {{ option.label }}
+            </span>
+          </template>
+        </BSelect>
+
+        <BSelect
+          v-model="many"
+          multiple
+          :options="traitList"
+          label="Своя сводка вместо перебора"
+          style="max-height: 4.5em"
+        >
+          <template #value="{ option }">
+            <span
+              v-if="option.value === many[0]"
+              class="text-xs"
+            >
+              Выбрано: {{ many.length }}
             </span>
           </template>
         </BSelect>

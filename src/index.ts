@@ -1,3 +1,11 @@
+/*
+ * The package. The stylesheet is pulled in here so the build has something to
+ * extract, but it lands beside the bundle rather than inside it — a consumer
+ * imports `bismuth-ui/style.css` themselves, which is what lets them drop it
+ * for a theme of their own.
+ */
+import './lib.css';
+
 export { default as BAutocomplete } from './components/autocomplete/Autocomplete.vue';
 export { default as BButton } from './components/button/Button.vue';
 export { default as BDropdown } from './components/dropdown/Dropdown.vue';

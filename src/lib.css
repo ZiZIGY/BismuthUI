@@ -1,0 +1,22 @@
+/*
+ * What ships. Tailwind's theme and utilities, since the components are laid
+ * out with utility classes, and the library's own tokens — but no preflight:
+ * a component library resetting its host's page is an ambush.
+ *
+ * The layer order is stated first, so a consumer's own stylesheet lands where
+ * they expect regardless of which file the bundler puts first.
+ */
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+
+/*
+ * Named rather than detected. Left to scan the project Tailwind reads the demo
+ * stand too, and its classes — page widths, headings — ship to everyone who
+ * installs the package. Only what the components themselves wear belongs here.
+ */
+@source './components';
+@source './directives';
+
+@import './theme/theme.css';

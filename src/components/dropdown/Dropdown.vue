@@ -375,6 +375,8 @@
   .b-dropdown__panel {
     --frame-slant: var(--dropdown-cut);
     --frame-line: var(--b-line);
+    /* a panel is a sheet, not a control seen edge-on: no thickness to shade */
+    --frame-edge: transparent;
     --frame-fill: var(--b-elevated);
 
     position: relative;
