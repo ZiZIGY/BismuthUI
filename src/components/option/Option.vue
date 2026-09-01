@@ -142,23 +142,6 @@
    * as if it were not there. Choosing widens it, and the text moves over
    * instead of jumping.
    */
-  /*
-   * The press wave is kept from counting towards the list's scroll. A wave is
-   * a square wide enough to reach the furthest corner from wherever it was
-   * struck, so it hangs well outside the row — harmless to look at, since the
-   * row's own `clip-path` shapes it, but a clip-path does not shrink the
-   * scrollable overflow the way it shrinks the painting. The scroller was
-   * counting it and offering a screen of emptiness below the last row for as
-   * long as the wave lived.
-   *
-   * `overflow` does shrink it, and costs nothing here: it cuts to the layer's
-   * rectangle, which is the row's own box, and the bevel is then taken out of
-   * that by the row above it. What is drawn is unchanged.
-   */
-  .b-option .b-ripple {
-    overflow: hidden;
-  }
-
   .b-option__mark {
     position: relative;
     flex: none;

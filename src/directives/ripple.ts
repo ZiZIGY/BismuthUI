@@ -73,16 +73,28 @@ function createLayer(host: HTMLElement): HTMLElement {
   }
 
   /*
-   * The layer gets a class and a box, and nothing that decides its shape. It
-   * used to carry `overflow: hidden`, which cut every wave to a rectangle
-   * before the component's own contour was ever consulted — and an inline clip
-   * would be no better, since a component cannot override one from a
-   * stylesheet. Whatever holds the wave says where it ends.
+   * The layer gets a box and nothing that decides its shape: whatever holds
+   * the wave says where it ends, through a `clip-path` in that component's own
+   * stylesheet. An inline clip here could not be overridden.
+   *
+   * `overflow: clip` is a different matter, and it has to be here. A wave is a
+   * square wide enough to reach the furthest corner from wherever it was
+   * struck, so it hangs far outside the layer — invisible, since the clip-path
+   * shapes it, but a clip-path only shapes the painting. The wave still counts
+   * towards the scrollable overflow of every scroll container it sits in, and
+   * any list holding a rippled control was growing a screen of emptiness for
+   * as long as a wave lived. `clip` takes it out of that reckoning, and unlike
+   * `hidden` it makes no scroll container of its own.
+   *
+   * Nothing is lost to it: the clip box is the layer's own rectangle, and
+   * every contour a component gives it is cut from percentages of that same
+   * rectangle — so the two never disagree.
    */
   const layer = document.createElement('span');
   layer.className = 'b-ripple';
   layer.setAttribute('aria-hidden', 'true');
-  layer.style.cssText = 'position:absolute;inset:0;pointer-events:none';
+  layer.style.cssText =
+    'position:absolute;inset:0;overflow:clip;pointer-events:none';
 
   host.appendChild(layer);
   return layer;

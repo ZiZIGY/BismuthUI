@@ -475,6 +475,17 @@
     }
   }
 
+  /*
+   * What the ring actually does. The angle is a registered property purely so
+   * these two frames can be interpolated — unregistered, `--frame-spin` would
+   * be a string, and a string does not travel from one value to another.
+   */
+  @keyframes b-frame-spectrum {
+    to {
+      --frame-spin: 360deg;
+    }
+  }
+
   /* --- focus ------------------------------------------------------------ */
 
   /*
