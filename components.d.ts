@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Autocomplete: typeof import('./src/components/autocomplete/Autocomplete.vue')['default']
     Button: typeof import('./src/components/button/Button.vue')['default']
+    Divider: typeof import('./src/components/divider/Divider.vue')['default']
     Dropdown: typeof import('./src/components/dropdown/Dropdown.vue')['default']
     Field: typeof import('./src/components/field/Field.vue')['default']
     FieldAddon: typeof import('./src/components/field/FieldAddon.vue')['default']

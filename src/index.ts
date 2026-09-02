@@ -8,6 +8,7 @@ import './lib.css';
 
 export { default as BAutocomplete } from './components/autocomplete/Autocomplete.vue';
 export { default as BButton } from './components/button/Button.vue';
+export { default as BDivider } from './components/divider/Divider.vue';
 export { default as BDropdown } from './components/dropdown/Dropdown.vue';
 export { default as BField } from './components/field/Field.vue';
 export { default as BFieldAddon } from './components/field/FieldAddon.vue';

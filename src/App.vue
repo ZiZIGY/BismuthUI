@@ -3,6 +3,7 @@
   import { Icon } from '@iconify/vue';
   import BButton from './components/button/Button.vue';
   import BAutocomplete from './components/autocomplete/Autocomplete.vue';
+  import BDivider from './components/divider/Divider.vue';
   import BDropdown from './components/dropdown/Dropdown.vue';
   import BOption from './components/option/Option.vue';
   import BScrollArea from './components/scroll-area/ScrollArea.vue';
@@ -1255,6 +1256,25 @@
           >
           <span class="text-xs text-bone-mute">{{ progress }}%</span>
         </div>
+      </div>
+    </section>
+
+    <section class="mb-14">
+      <h2 class="mb-6 text-xs tracking-[0.3em] text-bone-mute uppercase">
+        Divider
+      </h2>
+      <div class="flex flex-col gap-10">
+        <BDivider
+          v-for="s in sizes"
+          :key="s"
+          :size="s"
+        />
+
+        <BDivider
+          size="lg"
+          label="Свойства"
+          style="--divider-line: var(--b-text)"
+        />
       </div>
     </section>
 

@@ -66,6 +66,7 @@ yours.
 | `BDropdown` `BOption` `BOptionGroup` | a panel on a trigger, and rows for it |
 | `BSlider` | ticks, range, a bubble over the handle |
 | `BSwitch` `BProgress` `BScrollArea` `BLoader` | |
+| `BDivider` | a rule with a rhombus set into it |
 | `BFrame` `BThumb` | the shape and the handle, for building your own |
 
 Also exported: `vRipple` (the press wave), `cn` (class merge), `useDismiss`,
