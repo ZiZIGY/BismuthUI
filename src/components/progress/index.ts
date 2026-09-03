@@ -14,4 +14,11 @@ export interface IProgressProps {
   size?: TSize;
   /** Fill from right to left. */
   reverse?: boolean;
+  /**
+   * Marks along the track, in per cent. `true` puts one every tenth, a number
+   * puts one every N per cent, and an array places them at the given figures —
+   * a bar divided into the stages it actually has rather than into equal
+   * slices.
+   */
+  ticks?: boolean | number | readonly number[];
 }

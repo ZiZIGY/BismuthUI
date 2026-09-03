@@ -1241,6 +1241,23 @@
         />
         <BProgress :value="95" />
 
+        <BProgress
+          :value="progress"
+          ticks
+        />
+
+        <BProgress
+          :value="progress"
+          :ticks="25"
+          size="lg"
+        />
+
+        <BProgress
+          :value="progress"
+          :ticks="[0, 30, 45, 80, 100]"
+          size="lg"
+        />
+
         <div class="flex items-center gap-4">
           <BButton
             size="xs"
