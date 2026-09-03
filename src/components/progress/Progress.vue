@@ -46,8 +46,16 @@
     const stride = typeof setting === 'number' ? setting : 10;
     if (stride <= 0) return [];
 
+    /*
+     * The ends are left out. A generated run divides the bar, and the two
+     * figures at the ends are the ones the bar already states with its own
+     * points — a mark there is a second answer to a question nobody asked, and
+     * it has to sit on the bevel, where there is no bar to sit on.
+     *
+     * A list is another matter: asked for a mark at nought, we draw one.
+     */
     const marks: number[] = [];
-    for (let mark = 0; mark <= 100; mark += stride) marks.push(mark / 100);
+    for (let mark = stride; mark < 100; mark += stride) marks.push(mark / 100);
     return marks;
   });
 </script>
@@ -126,18 +134,22 @@
   }
 
   /*
-   * Step marks, the same rhombus the slider's are cut from. Placed by the
-   * ratio alone rather than inset from the tips: a mark stands for a figure,
-   * the fill's leading edge stands for the same figure, and the two have to
-   * meet — which costs the marks at nought and a hundred a bite out of the
-   * bevel, and that is the right price.
+   * Step marks, the same rhombus the slider's are cut from, and travelling the
+   * way the slider's do: over a range shortened at both ends, so the one at
+   * nought and the one at a hundred stand in the bar rather than on its point.
+   * The slider gives up half a handle at each end for the same reason.
    *
-   * One colour on both sides of the fill. A mark is the scale, not the value.
+   * Here what is given up is the bevel. Inside it the bar is a triangle with
+   * barely any height, and a mark placed there has nothing to sit on — set
+   * flush against the slant it lies along the contour itself, which is what
+   * made the end marks look like they had escaped.
    */
   .b-progress__tick {
     position: absolute;
     top: 50%;
-    left: calc(var(--tick-ratio) * 100%);
+    left: calc(
+      var(--frame-slant) + var(--tick-ratio) * (100% - var(--frame-slant) * 2)
+    );
     width: var(--tick-size);
     height: var(--tick-size);
     background: var(--b-muted);
@@ -155,11 +167,14 @@
   }
 
   /*
-   * Flat ends, and the bevels come from the contour the track is clipped by —
-   * the same arrangement the slider fills its groove with. It used to cut its
-   * own leading edge on the slant and sit wider than the track to hide the
-   * other one, which drew a bar of a different shape from every other filled
-   * thing here.
+   * Pointed at both ends, the same hexagon the track is cut from — so the bar
+   * reads as a smaller copy of the thing holding it rather than as a block
+   * shoved into one end of it. The leading point is the value: it is the part
+   * of the bar that moves, and it comes to a tip rather than a wall.
+   *
+   * Held to the middle with min()/max(). A bar narrower than two bevels would
+   * otherwise send the two cuts past each other and turn the shape inside out;
+   * clamped, it simply folds into a rhombus and keeps its point.
    */
   .b-progress__value {
     position: absolute;
@@ -167,6 +182,14 @@
     bottom: 0;
     left: 0;
     right: calc((1 - var(--progress-ratio)) * 100%);
+    clip-path: polygon(
+      0 50%,
+      min(var(--frame-slant), 50%) 0,
+      max(calc(100% - var(--frame-slant)), 50%) 0,
+      100% 50%,
+      max(calc(100% - var(--frame-slant)), 50%) 100%,
+      min(var(--frame-slant), 50%) 100%
+    );
     background: var(--progress-accent);
     transition: right 0.3s ease;
   }

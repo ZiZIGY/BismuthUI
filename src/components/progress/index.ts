@@ -19,6 +19,9 @@ export interface IProgressProps {
    * puts one every N per cent, and an array places them at the given figures —
    * a bar divided into the stages it actually has rather than into equal
    * slices.
+   *
+   * A generated run leaves the ends bare, since the bar's own points already
+   * stand for nought and a hundred. An array is taken literally.
    */
   ticks?: boolean | number | readonly number[];
 }

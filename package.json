@@ -1,6 +1,6 @@
 {
   "name": "bismuth-ui",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "type": "module",
   "description": "Vue 3 components cut from hexagons: 45° bevels drawn in CSS layers, an iridescent contour, and a theme that swaps with one custom property.",
   "keywords": [

@@ -1254,7 +1254,7 @@
 
         <BProgress
           :value="progress"
-          :ticks="[0, 30, 45, 80, 100]"
+          :ticks="[30, 45, 80]"
           size="lg"
         />
 
