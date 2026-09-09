@@ -15,6 +15,11 @@
   import BProgress from './components/progress/Progress.vue';
   import BSlider from './components/slider/Slider.vue';
   import BSwitch from './components/switch/Switch.vue';
+  import BTab from './components/tabs/Tab.vue';
+  import BTabList from './components/tabs/TabList.vue';
+  import BTabPanel from './components/tabs/TabPanel.vue';
+  import BTabPanels from './components/tabs/TabPanels.vue';
+  import BTabs from './components/tabs/Tabs.vue';
   import BThemeToggle from './components/theme-toggle/ThemeToggle.vue';
   import type { TButtonVariant } from './components/button';
   import type { IOption } from './components/option';
@@ -126,6 +131,15 @@
         .filter(([, names]) => names.length) as [string, string[]][]
   );
   const currency = ref<string | number>('RUB');
+
+  const facet = ref<string | number>('overview');
+  const facets = [
+    { value: 'overview', label: 'Обзор' },
+    { value: 'lattice', label: 'Решётка' },
+    { value: 'isotopes', label: 'Изотопы' },
+    { value: 'legacy', label: 'Архив', disabled: true },
+  ];
+  const side = ref<string | number>('overview');
 
   const progress = ref(40);
   const volume = ref(35);
@@ -1273,6 +1287,79 @@
           >
           <span class="text-xs text-bone-mute">{{ progress }}%</span>
         </div>
+      </div>
+    </section>
+
+    <section class="mb-14">
+      <h2 class="mb-6 text-xs tracking-[0.3em] text-bone-mute uppercase">
+        Tabs
+      </h2>
+
+      <div class="flex flex-col gap-12">
+        <BTabs v-model="facet">
+          <BTabList>
+            <BTab
+              v-for="tab in facets"
+              :key="tab.value"
+              :value="tab.value"
+              :disabled="tab.disabled"
+            >
+              {{ tab.label }}
+            </BTab>
+          </BTabList>
+
+          <BTabPanels>
+            <BTabPanel value="overview">
+              <p class="text-sm">
+                Висмут — постпереходный металл с самой низкой теплопроводностью
+                после ртути.
+              </p>
+            </BTabPanel>
+
+            <BTabPanel value="lattice">
+              <p class="text-sm">
+                Ромбоэдрическая решётка: слои атомов, сдвинутые друг
+                относительно друга. Строчка вторая, чтобы панель была выше
+                соседней.
+              </p>
+            </BTabPanel>
+
+            <BTabPanel value="isotopes">
+              <p class="text-sm">Bi-209 — период полураспада измерен в 2003-м.</p>
+            </BTabPanel>
+
+            <BTabPanel value="legacy">
+              <p class="text-sm">Архив</p>
+            </BTabPanel>
+          </BTabPanels>
+        </BTabs>
+
+        <BTabs
+          v-model="side"
+          orientation="vertical"
+          size="sm"
+        >
+          <BTabList>
+            <BTab
+              v-for="tab in facets"
+              :key="tab.value"
+              :value="tab.value"
+              :disabled="tab.disabled"
+            >
+              {{ tab.label }}
+            </BTab>
+          </BTabList>
+
+          <BTabPanels>
+            <BTabPanel
+              v-for="tab in facets"
+              :key="tab.value"
+              :value="tab.value"
+            >
+              <p class="text-sm">Панель: {{ tab.label }}</p>
+            </BTabPanel>
+          </BTabPanels>
+        </BTabs>
       </div>
     </section>
 

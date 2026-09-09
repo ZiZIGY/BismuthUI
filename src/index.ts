@@ -23,6 +23,11 @@ export { default as BScrollbar } from './components/scroll-area/Scrollbar.vue';
 export { default as BSelect } from './components/select/Select.vue';
 export { default as BSlider } from './components/slider/Slider.vue';
 export { default as BSwitch } from './components/switch/Switch.vue';
+export { default as BTab } from './components/tabs/Tab.vue';
+export { default as BTabList } from './components/tabs/TabList.vue';
+export { default as BTabPanel } from './components/tabs/TabPanel.vue';
+export { default as BTabPanels } from './components/tabs/TabPanels.vue';
+export { default as BTabs } from './components/tabs/Tabs.vue';
 export { default as BTextarea } from './components/textarea/Textarea.vue';
 export { default as BThemeToggle } from './components/theme-toggle/ThemeToggle.vue';
 export { default as BThumb } from './components/thumb/Thumb.vue';
@@ -67,6 +72,17 @@ export {
   switchVariants,
   type ISwitchProps,
 } from './components/switch';
+
+export {
+  tabsVariants,
+  TABS_CONTEXT,
+  type ITabPanelProps,
+  type ITabProps,
+  type ITabsContext,
+  type ITabsItem,
+  type ITabsProps,
+  type TTabsOrientation,
+} from './components/tabs';
 
 export type {
   IScrollAreaProps,

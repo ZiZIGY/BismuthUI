@@ -28,6 +28,7 @@ declare module 'vue' {
     Select: typeof import('./src/components/select/Select.vue')['default']
     Slider: typeof import('./src/components/slider/Slider.vue')['default']
     Switch: typeof import('./src/components/switch/Switch.vue')['default']
+    Tabs: typeof import('./src/components/tabs/Tabs.vue')['default']
     Textarea: typeof import('./src/components/textarea/Textarea.vue')['default']
     ThemeToggle: typeof import('./src/components/theme-toggle/ThemeToggle.vue')['default']
     Thumb: typeof import('./src/components/thumb/Thumb.vue')['default']

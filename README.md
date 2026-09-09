@@ -66,6 +66,7 @@ yours.
 | `BDropdown` `BOption` `BOptionGroup` | a panel on a trigger, and rows for it |
 | `BSlider` | ticks, range, a bubble over the handle |
 | `BSwitch` `BProgress` `BScrollArea` `BLoader` | |
+| `BTabs` `BTabList` `BTab` `BTabPanels` `BTabPanel` | assembled by you; panels slide in from the side they sit on |
 | `BDivider` | a rule with a rhombus set into it |
 | `BFrame` `BThumb` | the shape and the handle, for building your own |
 
