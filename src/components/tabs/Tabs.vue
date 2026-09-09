@@ -110,6 +110,8 @@
     --tabs-accent: var(--b-tone, var(--b-text));
     --tabs-travel: 0.34s;
     --tabs-ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+    /* the air between two panels while one is replacing the other */
+    --tabs-slide-gap: calc(var(--tabs-space) * 2);
     --frame-line: var(--b-line);
     --frame-fill: var(--b-elevated);
     --frame-slant: calc(var(--tabs-height) / 2);

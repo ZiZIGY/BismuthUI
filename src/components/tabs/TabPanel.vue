@@ -32,21 +32,33 @@
 
 <style>
   /*
-   * Out of the flow and stretched to the box, which is the whole of why it
-   * clears. `inset: 0` and not just a corner: a panel left at its own height
-   * travels its own height, so a short one waiting after a tall one comes to
-   * rest inside the box and shows through. Pinned to all four sides it is
-   * exactly the box, and one box away is always out.
+   * Every panel in the same cell, and so every panel the same size — which is
+   * what makes `100%` mean one thing. In the flow rather than out of it: the
+   * cell is measured from all of them together, so the box has a size before
+   * anything is chosen and keeps it afterwards.
    *
    * Nothing fades. A panel parked one box out is already past a clipping edge,
    * so it is gone on the geometry alone — dimming it as well would be a panel
    * sliding in while it is still becoming visible, two effects arguing.
+   *
+   * What it does need is `visibility`, and the delay on it is the point. Sides
+   * are read off the markup, so a step from the first tab to the third turns
+   * the middle panel around: it was waiting ahead and now waits behind, and
+   * the only way there is straight across the box in full view. Hidden while
+   * it is neither chosen nor leaving, it makes that crossing unseen.
+   *
+   * The delay is what keeps the one leaving on screen. It becomes unchosen the
+   * instant the value changes, and would vanish rather than slide out; held
+   * for exactly as long as the slide, it goes the way it came and hides once
+   * it is past the edge. The chosen one has no delay, so it appears at once.
    */
   .b-tab-panel {
-    position: absolute;
-    inset: 0;
+    grid-area: 1 / 1;
+    visibility: hidden;
     pointer-events: none;
-    transition: transform var(--tabs-travel) var(--tabs-ease);
+    transition:
+      transform var(--tabs-travel) var(--tabs-ease),
+      visibility 0s linear var(--tabs-travel);
   }
 
   /*
@@ -55,33 +67,40 @@
    * behind, and `~` is the whole of that rule. Nothing has to remember which
    * way the last move went, and a jump across three tabs slides exactly like a
    * step across one.
+   *
+   * A box away and then some. Parked at exactly `100%` two panels share an
+   * edge, so mid-slide the last line of the one leaving sits against the first
+   * word of the one arriving with nothing between them — the gap is the air
+   * that keeps the two from reading as one paragraph in motion.
    */
   .b-tabs--horizontal .b-tab-panel {
-    transform: translateX(-100%);
+    transform: translateX(calc(-100% - var(--tabs-slide-gap)));
   }
 
   .b-tabs--horizontal .b-tab-panel--active ~ .b-tab-panel {
-    transform: translateX(100%);
+    transform: translateX(calc(100% + var(--tabs-slide-gap)));
   }
 
   .b-tabs--vertical .b-tab-panel {
-    transform: translateY(-100%);
+    transform: translateY(calc(-100% - var(--tabs-slide-gap)));
   }
 
   .b-tabs--vertical .b-tab-panel--active ~ .b-tab-panel {
-    transform: translateY(100%);
+    transform: translateY(calc(100% + var(--tabs-slide-gap)));
   }
 
   /*
-   * The one in the flow, and so the one the box takes its height from. Written
-   * after the two pairs above and at the same weight, which is what puts it on
-   * top of them.
+   * Written after the two pairs above and at the same weight, which is what
+   * puts it on top of them.
    */
   .b-tabs--horizontal .b-tab-panel--active,
   .b-tabs--vertical .b-tab-panel--active {
-    position: relative;
+    visibility: visible;
     pointer-events: auto;
     transform: translate(0);
+    transition:
+      transform var(--tabs-travel) var(--tabs-ease),
+      visibility 0s;
   }
 
   @media (prefers-reduced-motion: reduce) {

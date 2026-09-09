@@ -76,6 +76,13 @@
     position: relative;
     display: flex;
     flex: none;
+    /*
+     * As wide as its tabs and no wider. Left to stretch it would run the whole
+     * length of the panels and leave the frame trailing off into nothing past
+     * the last tab — one rule for both orientations, since `align-self` works
+     * on whichever axis happens to be the cross one.
+     */
+    align-self: flex-start;
     padding: var(--b-stroke, 1.4px);
     font-size: var(--tabs-font);
   }
