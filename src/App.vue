@@ -3,15 +3,18 @@
   import { Icon } from '@iconify/vue';
   import BButton from './components/button/Button.vue';
   import BAutocomplete from './components/autocomplete/Autocomplete.vue';
+  import BDialog from './components/dialog/Dialog.vue';
   import BDivider from './components/divider/Divider.vue';
   import BDropdown from './components/dropdown/Dropdown.vue';
   import BOption from './components/option/Option.vue';
+  import BResizable from './components/resizable/Resizable.vue';
   import BScrollArea from './components/scroll-area/ScrollArea.vue';
   import BSelect from './components/select/Select.vue';
   import BOptionGroup from './components/option/OptionGroup.vue';
   import BFieldAddon from './components/field/FieldAddon.vue';
   import BTextarea from './components/textarea/Textarea.vue';
   import BInput from './components/input/Input.vue';
+  import BPagination from './components/pagination/Pagination.vue';
   import BProgress from './components/progress/Progress.vue';
   import BSlider from './components/slider/Slider.vue';
   import BSwitch from './components/switch/Switch.vue';
@@ -140,6 +143,13 @@
     { value: 'legacy', label: 'Архив', disabled: true },
   ];
   const side = ref<string | number>('overview');
+
+  const page = ref(1);
+
+  const confirming = ref(false);
+  const reading = ref(false);
+
+  const stableRows = ref(9);
 
   const progress = ref(40);
   const volume = ref(35);
@@ -870,6 +880,39 @@
 
         <div>
           <span class="mb-2 block text-xs text-bone-mute">
+            vertical · gutter=stable · содержимое не прыгает
+          </span>
+          <BScrollArea
+            gutter="stable"
+            class="border border-(--b-line)"
+            style="
+              --scroll-area-height: 9em;
+              --scroll-area-pad-block-start: 0.6em;
+              --scroll-area-pad-block-end: 0.6em;
+              --scroll-area-pad-inline: 0.8em;
+            "
+          >
+            <p
+              v-for="line in stableRows"
+              :key="line"
+              class="text-sm"
+            >
+              {{ line }}. Строка
+            </p>
+          </BScrollArea>
+
+          <BButton
+            size="xs"
+            variant="plain"
+            class="mt-2"
+            @click="stableRows = stableRows === 2 ? 9 : 2"
+          >
+            {{ stableRows === 2 ? 'Переполнить' : 'Опустошить' }}
+          </BButton>
+        </div>
+
+        <div>
+          <span class="mb-2 block text-xs text-bone-mute">
             horizontal · visibility=always
           </span>
           <BScrollArea
@@ -921,6 +964,150 @@
             </p>
           </BScrollArea>
         </div>
+      </div>
+    </section>
+
+    <section class="mb-14">
+      <h2 class="mb-6 text-xs tracking-[0.3em] text-bone-mute uppercase">
+        Pagination
+      </h2>
+      <div class="flex flex-col gap-8">
+        <BPagination
+          v-model="page"
+          :total="7"
+        />
+
+        <BPagination
+          v-model="page"
+          :total="24"
+          size="lg"
+        />
+
+        <BPagination
+          v-model="page"
+          :total="6"
+          :arrows="false"
+        >
+          <template #page="{ active }">
+            <span
+              class="block size-2 rounded-full"
+              :class="active ? 'bg-(--b-text)' : 'bg-(--b-line)'"
+            />
+          </template>
+        </BPagination>
+
+        <span class="text-xs text-bone-mute">страница {{ page }}</span>
+      </div>
+    </section>
+
+    <section class="mb-14">
+      <h2 class="mb-6 text-xs tracking-[0.3em] text-bone-mute uppercase">
+        Dialog
+      </h2>
+      <div class="flex flex-wrap items-center gap-6">
+        <BButton @click="confirming = true">Открыть окно</BButton>
+        <BButton
+          variant="plain"
+          @click="reading = true"
+        >
+          Длинный текст
+        </BButton>
+      </div>
+
+      <BDialog
+        v-model:open="confirming"
+        v-slot="{ close }"
+        label="Удалить образец"
+      >
+        <div
+          class="flex w-96 max-w-full flex-col gap-4 border border-(--b-line)
+            bg-(--b-elevated) p-6"
+        >
+          <h2 class="text-base font-medium">Удалить образец?</h2>
+
+          <p class="text-sm text-(--b-muted)">
+            Висмут вернётся в общий список, но все замеры по нему пропадут.
+          </p>
+
+          <div class="flex justify-end gap-3">
+            <BButton
+              variant="ghost"
+              @click="close"
+            >
+              Отмена
+            </BButton>
+            <BButton @click="close">Удалить</BButton>
+          </div>
+        </div>
+      </BDialog>
+
+      <BDialog
+        v-model:open="reading"
+        v-slot="{ close }"
+        label="Своя коробка"
+      >
+        <div
+          class="flex max-h-full w-104 max-w-full flex-col gap-4 border border-(--b-line) bg-(--b-elevated) p-6"
+        >
+          <p class="text-sm">
+            Контейнер тут свой: ни рамки, ни отступов от библиотеки.
+          </p>
+
+          <BButton
+            size="xs"
+            variant="plain"
+            class="w-full"
+            @click="close"
+          >
+            Закрыть
+          </BButton>
+        </div>
+      </BDialog>
+    </section>
+
+    <section class="mb-14">
+      <h2 class="mb-6 text-xs tracking-[0.3em] text-bone-mute uppercase">
+        Resizable
+      </h2>
+      <div class="flex flex-col gap-8">
+        <BResizable
+          class="border border-(--b-line)"
+          label="Потянуть за угол"
+          style="
+            width: 22em;
+            height: 11em;
+            min-width: 12em;
+            max-width: 100%;
+            min-height: 6em;
+            max-height: 24em;
+          "
+        >
+          <BScrollArea
+            gutter="stable"
+            style="
+              --scroll-area-pad-block-start: 0.6em;
+              --scroll-area-pad-block-end: 0.6em;
+              --scroll-area-pad-inline: 0.8em;
+            "
+          >
+            <p
+              v-for="line in 12"
+              :key="line"
+              class="text-sm"
+            >
+              {{ line }}. Полоса и хват не мешают друг другу
+            </p>
+          </BScrollArea>
+        </BResizable>
+
+        <BResizable
+          axis="horizontal"
+          class="border border-(--b-line)"
+          label="Потянуть за правый край"
+          style="width: 18em; min-width: 8em; max-width: 100%"
+        >
+          <p class="p-3 text-sm">Только по ширине</p>
+        </BResizable>
       </div>
     </section>
 
@@ -1325,7 +1512,9 @@
             </BTabPanel>
 
             <BTabPanel value="isotopes">
-              <p class="text-sm">Bi-209 — период полураспада измерен в 2003-м.</p>
+              <p class="text-sm"
+                >Bi-209 — период полураспада измерен в 2003-м.</p
+              >
             </BTabPanel>
 
             <BTabPanel value="legacy">

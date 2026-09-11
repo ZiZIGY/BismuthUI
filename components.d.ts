@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Autocomplete: typeof import('./src/components/autocomplete/Autocomplete.vue')['default']
     Button: typeof import('./src/components/button/Button.vue')['default']
+    Dialog: typeof import('./src/components/dialog/Dialog.vue')['default']
     Divider: typeof import('./src/components/divider/Divider.vue')['default']
     Dropdown: typeof import('./src/components/dropdown/Dropdown.vue')['default']
     Field: typeof import('./src/components/field/Field.vue')['default']
@@ -22,7 +23,9 @@ declare module 'vue' {
     Loader: typeof import('./src/components/loader/Loader.vue')['default']
     Option: typeof import('./src/components/option/Option.vue')['default']
     OptionGroup: typeof import('./src/components/option/OptionGroup.vue')['default']
+    Pagination: typeof import('./src/components/pagination/Pagination.vue')['default']
     Progress: typeof import('./src/components/progress/Progress.vue')['default']
+    Resizable: typeof import('./src/components/resizable/Resizable.vue')['default']
     ScrollArea: typeof import('./src/components/scroll-area/ScrollArea.vue')['default']
     Scrollbar: typeof import('./src/components/scroll-area/Scrollbar.vue')['default']
     Select: typeof import('./src/components/select/Select.vue')['default']

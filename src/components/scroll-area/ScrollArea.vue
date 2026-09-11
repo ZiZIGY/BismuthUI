@@ -21,6 +21,7 @@
   const props = withDefaults(defineProps<IScrollAreaProps>(), {
     axis: 'vertical',
     visibility: 'auto',
+    gutter: 'auto',
   });
 
   const viewport = useTemplateRef<HTMLElement>('viewport');
@@ -39,16 +40,22 @@
   const { isScrolling } = useScroll(viewport);
 
   /*
-   * The gutter is not the same question as the bar being visible: held on
-   * screen with nothing to scroll, a bar still needs the room, or it would
-   * stand on the content.
+   * The gutter is not the same question as the bar being visible, and the two
+   * reasons to keep it are different ones. A bar held on screen with nothing
+   * to scroll needs the room or it would stand on the content — that is the
+   * mode's doing. `stable` keeps it for its own sake: the bar still comes and
+   * goes, but the content no longer moves when it does.
    */
+  const holdGutter = computed(
+    () => props.gutter === 'stable' || props.visibility === 'always'
+  );
+
   const gutterDown = computed(() =>
-    props.visibility === 'always' ? down.value : scrollsDown.value
+    holdGutter.value ? down.value : scrollsDown.value
   );
 
   const gutterAcross = computed(() =>
-    props.visibility === 'always' ? across.value : scrollsAcross.value
+    holdGutter.value ? across.value : scrollsAcross.value
   );
 </script>
 

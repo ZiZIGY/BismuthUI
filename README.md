@@ -65,8 +65,12 @@ yours.
 | `BSelect` `BAutocomplete` | grow with their values; a list underneath |
 | `BDropdown` `BOption` `BOptionGroup` | a panel on a trigger, and rows for it |
 | `BSlider` | ticks, range, a bubble over the handle |
-| `BSwitch` `BProgress` `BScrollArea` `BLoader` | |
+| `BSwitch` `BProgress` `BLoader` | |
+| `BScrollArea` | bars of its own; `gutter="stable"` keeps their room either way |
+| `BResizable` | pulled to size by a grip that keeps out of a scroll bar's way |
+| `BDialog` | a native `<dialog>` in the top layer; the window inside is yours |
 | `BTabs` `BTabList` `BTab` `BTabPanels` `BTabPanel` | assembled by you; panels slide in from the side they sit on |
+| `BPagination` | pages as rhombi; a slot puts figures or anything else in them |
 | `BDivider` | a rule with a rhombus set into it |
 | `BFrame` `BThumb` | the shape and the handle, for building your own |
 

@@ -8,6 +8,7 @@ import './lib.css';
 
 export { default as BAutocomplete } from './components/autocomplete/Autocomplete.vue';
 export { default as BButton } from './components/button/Button.vue';
+export { default as BDialog } from './components/dialog/Dialog.vue';
 export { default as BDivider } from './components/divider/Divider.vue';
 export { default as BDropdown } from './components/dropdown/Dropdown.vue';
 export { default as BField } from './components/field/Field.vue';
@@ -17,7 +18,9 @@ export { default as BInput } from './components/input/Input.vue';
 export { default as BLoader } from './components/loader/Loader.vue';
 export { default as BOption } from './components/option/Option.vue';
 export { default as BOptionGroup } from './components/option/OptionGroup.vue';
+export { default as BPagination } from './components/pagination/Pagination.vue';
 export { default as BProgress } from './components/progress/Progress.vue';
+export { default as BResizable } from './components/resizable/Resizable.vue';
 export { default as BScrollArea } from './components/scroll-area/ScrollArea.vue';
 export { default as BScrollbar } from './components/scroll-area/Scrollbar.vue';
 export { default as BSelect } from './components/select/Select.vue';
@@ -44,6 +47,11 @@ export {
   type TFieldAlign,
   type TFieldVariant,
 } from './components/field';
+
+export {
+  paginationVariants,
+  type IPaginationProps,
+} from './components/pagination';
 
 export {
   progressVariants,
@@ -84,10 +92,19 @@ export {
   type TTabsOrientation,
 } from './components/tabs';
 
+export type { IDialogProps } from './components/dialog';
+
+export {
+  resizableVariants,
+  type IResizableProps,
+  type TResizeAxis,
+} from './components/resizable';
+
 export type {
   IScrollAreaProps,
   IScrollbarProps,
   TScrollAxis,
+  TScrollGutter,
   TScrollVisibility,
 } from './components/scroll-area';
 
