@@ -39,5 +39,6 @@ declare module 'vue' {
     Textarea: typeof import('./src/components/textarea/Textarea.vue')['default']
     ThemeToggle: typeof import('./src/components/theme-toggle/ThemeToggle.vue')['default']
     Thumb: typeof import('./src/components/thumb/Thumb.vue')['default']
+    Tooltip: typeof import('./src/components/tooltip/Tooltip.vue')['default']
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { useTemplateRef, watch } from 'vue';
+  import { onBeforeUnmount, useTemplateRef, watch } from 'vue';
   import { onKeyStroke, useScrollLock } from '@vueuse/core';
   import { useFocusTrap } from './useFocusTrap';
   import type { IDialogProps } from '.';
@@ -25,7 +25,10 @@
    * close, Escape is read here directly, and every other child of `<body>` is
    * marked `inert` for as long as this one is open — a native dialog does the
    * same to the whole document, and a div reaching only as far as its
-   * siblings is the closest an ordinary element can come.
+   * siblings is the closest an ordinary element can come. A sibling carrying
+   * `data-b-dialog-keep` is skipped: that is the host's own chrome — a custom
+   * titlebar, a toast rail — which the top layer used to hide and which a div
+   * is meant to let through.
    *
    * Teleported to `body` regardless. A fixed position is undone by a
    * transformed, filtered or contained ancestor, and teleporting is what
@@ -65,6 +68,8 @@
 
     for (const child of Array.from(document.body.children)) {
       if (child === root.value) continue;
+      /* the host's chrome stays live over the window; stacking it is the host's job */
+      if (child.hasAttribute('data-b-dialog-keep')) continue;
 
       if (value && !child.hasAttribute('inert')) {
         child.setAttribute('inert', '');
@@ -81,8 +86,27 @@
     setBackgroundInert(value);
   });
 
-  /* not gated by `dismissible`: a press outside is optional, Escape is not */
-  onKeyStroke('Escape', () => {
+  /*
+   * Unmounted while open — a host that keeps the window in the tree only for
+   * as long as it is open (`v-if`) — would leave every sibling inert and the
+   * scroll locked: the watcher above never sees that close. A native `<dialog>`
+   * dropped its modality together with the element; this does the same by
+   * hand, while `root` is still in the document to be skipped.
+   */
+  onBeforeUnmount(() => {
+    if (!open.value) return;
+    locked.value = false;
+    setBackgroundInert(false);
+  });
+
+  /*
+   * Not gated by `dismissible`: a press outside is optional, Escape is not.
+   * A host that already handled the key — `preventDefault` on capture, the
+   * way a native `<dialog>` would have been told not to cancel — keeps its
+   * decision; the window closes only on an Escape nobody else claimed.
+   */
+  onKeyStroke('Escape', (event) => {
+    if (event.defaultPrevented) return;
     if (open.value) open.value = false;
   });
 

@@ -29,6 +29,7 @@
   import type { TSize } from './theme/types';
   import BLoader from './components/loader/Loader.vue';
   import BThumb from './components/thumb/Thumb.vue';
+  import BTooltip from './components/tooltip/Tooltip.vue';
   import { motion } from 'motion-v';
 
   const variants: TButtonVariant[] = ['spectrum', 'plain', 'outline', 'ghost'];
@@ -1549,6 +1550,79 @@
             </BTabPanel>
           </BTabPanels>
         </BTabs>
+      </div>
+    </section>
+
+    <section class="mb-14">
+      <h2 class="mb-6 text-xs tracking-[0.3em] text-bone-mute uppercase">
+        Tooltip
+      </h2>
+      <div class="flex flex-wrap items-center gap-8">
+        <BTooltip placement="top">
+          <template #trigger>
+            <BButton variant="plain">Top</BButton>
+          </template>
+          Сверху
+        </BTooltip>
+
+        <BTooltip placement="right">
+          <template #trigger>
+            <BButton variant="plain">Right</BButton>
+          </template>
+          Справа
+        </BTooltip>
+
+        <BTooltip placement="bottom">
+          <template #trigger>
+            <BButton variant="plain">Bottom</BButton>
+          </template>
+          Снизу
+        </BTooltip>
+
+        <BTooltip placement="left">
+          <template #trigger>
+            <BButton variant="plain">Left</BButton>
+          </template>
+          Слева
+        </BTooltip>
+
+        <BTooltip disabled>
+          <template #trigger>
+            <BButton
+              variant="plain"
+              disabled
+            >
+              Disabled
+            </BButton>
+          </template>
+          Не должно показаться
+        </BTooltip>
+      </div>
+
+      <!--
+        Full-bleed on purpose: `main` centres a max-w-4xl column, so a button
+        at ITS edge still sits a few hundred pixels from the real one on a
+        wide screen — nowhere near enough to force the flip this is meant to
+        show. Breaking out to the true viewport edges is what actually starves
+        a side of room.
+      -->
+      <div
+        class="mt-6 flex items-center justify-between px-4"
+        style="width: 100vw; margin-inline: calc(50% - 50vw)"
+      >
+        <BTooltip placement="left">
+          <template #trigger>
+            <BButton variant="plain">У левого края</BButton>
+          </template>
+          Просят left, слева нет места — уходит вправо
+        </BTooltip>
+
+        <BTooltip placement="right">
+          <template #trigger>
+            <BButton variant="plain">У правого края</BButton>
+          </template>
+          Просят right, справа нет места — уходит влево
+        </BTooltip>
       </div>
     </section>
 

@@ -34,6 +34,7 @@ export { default as BTabs } from './components/tabs/Tabs.vue';
 export { default as BTextarea } from './components/textarea/Textarea.vue';
 export { default as BThemeToggle } from './components/theme-toggle/ThemeToggle.vue';
 export { default as BThumb } from './components/thumb/Thumb.vue';
+export { default as BTooltip } from './components/tooltip/Tooltip.vue';
 
 export {
   buttonVariants,
@@ -108,9 +109,16 @@ export type {
   TScrollVisibility,
 } from './components/scroll-area';
 
+export type {
+  ITooltipProps,
+  TTooltipPlacement,
+  TTooltipSide,
+} from './components/tooltip';
+
 export { useDismiss } from './components/dropdown/useDismiss';
 export { useListCursor } from './components/dropdown/useListCursor';
 export { useFieldControl } from './components/field/useFieldControl';
+export { usePlacement } from './components/tooltip/usePlacement';
 
 export {
   vRipple,
