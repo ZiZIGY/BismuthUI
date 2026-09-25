@@ -1,5 +1,10 @@
-import { useElementBounding, useWindowSize } from '@vueuse/core';
-import { computed, type Ref } from 'vue';
+import {
+  useElementBounding,
+  useElementSize,
+  useRafFn,
+  useWindowSize,
+} from '@vueuse/core';
+import { computed, watch, type Ref } from 'vue';
 import type { TTooltipPlacement, TTooltipSide } from '.';
 
 const SIDES: readonly TTooltipSide[] = ['top', 'bottom', 'left', 'right'];
@@ -30,17 +35,43 @@ function clamp(value: number, low: number, high: number) {
  * A side "fits" along its own axis and is otherwise clamped across it: the box
  * is centred on the trigger and then held inside the viewport rather than let
  * run off the edge it wasn't even testing against.
+ *
+ * The trigger is read when the box opens and then every frame until it
+ * closes. The bounding's own observers only notice the trigger resizing or
+ * the page scrolling — a trigger pushed along by a neighbour appearing or
+ * leaving keeps its size, nothing scrolls, and the box would open where the
+ * trigger used to be. Hence no listeners of its own either: a closed tooltip
+ * has nothing to keep up to date, and an open one is polled anyway.
+ *
+ * The box itself is sized rather than bounded. Its rect carries the entry
+ * transform — shrunk and nudged while closed — so centring on it lands a few
+ * pixels off; the border box is the size it settles at.
  */
 export function usePlacement(
   trigger: Ref<HTMLElement | null>,
   panel: Ref<HTMLElement | null>,
   placement: Ref<TTooltipPlacement>,
+  open: Ref<boolean>,
   gap = 8,
   edge = 8
 ) {
-  const from = useElementBounding(trigger);
-  const box = useElementBounding(panel);
+  const from = useElementBounding(trigger, {
+    windowResize: false,
+    windowScroll: false,
+  });
+  const box = useElementSize(panel, undefined, { box: 'border-box' });
   const viewport = useWindowSize({ includeScrollbar: false });
+
+  const { pause, resume } = useRafFn(from.update, { immediate: false });
+
+  watch(open, (value) => {
+    if (value) {
+      from.update();
+      resume();
+    } else {
+      pause();
+    }
+  });
 
   const side = computed<TTooltipSide>(() => {
     const room = {

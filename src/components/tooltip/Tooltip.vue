@@ -38,7 +38,7 @@
   const placement = ref(props.placement);
   watch(() => props.placement, (value) => (placement.value = value));
 
-  const { side, style } = usePlacement(trigger, panel, placement);
+  const { side, style } = usePlacement(trigger, panel, placement, open);
 
   let timer: ReturnType<typeof setTimeout> | undefined;
 
