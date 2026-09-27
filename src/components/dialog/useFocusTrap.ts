@@ -49,8 +49,8 @@ export function useFocusTrap(
   });
 
   /*
-   * Flushed after the DOM update, or the element is still `display: none` at
-   * the moment this runs and `.focus()` on it does nothing. `root` itself is
+   * Flushed after the DOM update, or the element is not mounted yet at the
+   * moment this runs and there is nothing to focus. `root` itself is
    * the fallback sink, carrying `tabindex="-1"` for content with nothing
    * focusable in it.
    */

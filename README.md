@@ -68,8 +68,8 @@ yours.
 | `BSwitch` `BProgress` `BLoader` | |
 | `BScrollArea` | bars of its own; `gutter="stable"` keeps their room either way |
 | `BResizable` | pulled to size by a grip that keeps out of a scroll bar's way |
-| `BDialog` | a native `<dialog>` in the top layer; the window inside is yours |
-| `BTabs` `BTabList` `BTab` `BTabPanels` `BTabPanel` | assembled by you; panels slide in from the side they sit on |
+| `BDialog` | a window over the page, mounted only while open; the panel inside is yours |
+| `BTabs` `BTabList` `BTab` `BTabPanels` `BTabPanel` | assembled by you; only the chosen panel is mounted, and it slides in from the side it sits on |
 | `BPagination` | pages as rhombi; a slot puts figures or anything else in them |
 | `BDivider` | a rule with a rhombus set into it |
 | `BFrame` `BThumb` | the shape and the handle, for building your own |
