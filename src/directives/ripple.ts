@@ -7,6 +7,10 @@ import type { Directive } from 'vue';
  * with ease-out, fading from 0.2 to 0.1 on the way, waits for the release and
  * dissolves in 0.15s. The layer is marked with `.b-ripple` so a component can
  * clip it to its own contour and the wave never leaks past the bevels.
+ *
+ * The layer exists only while a wave does: made on the press, removed with
+ * the last wave to finish. A page of buttons at rest carries no layers, and
+ * nothing is measured until something is pressed.
  */
 export interface IRippleOptions {
   /** Wave colour. */
@@ -46,7 +50,9 @@ const SIZE_ALLOWANCE = 1.025;
 interface IRippleState {
   enabled: boolean;
   options: Required<IRippleOptions>;
-  layer: HTMLElement;
+  host: HTMLElement;
+  layer: HTMLElement | null;
+  waves: number;
   onPointerDown: (event: PointerEvent) => void;
   onClick: (event: MouseEvent) => void;
 }
@@ -100,6 +106,10 @@ function createLayer(host: HTMLElement): HTMLElement {
   return layer;
 }
 
+function layerOf(state: IRippleState): HTMLElement {
+  return (state.layer ??= createLayer(state.host));
+}
+
 /**
  * A rhombus covers a point once its half-diagonal reaches the Manhattan
  * distance to that point, so the size is derived from it.
@@ -120,7 +130,8 @@ function reachToFurthestCorner(
 function spawn(state: IRippleState, x: number, y: number) {
   const { color, initialOpacity, finalOpacity, duration, dissolveDuration } =
     state.options;
-  const { width, height } = state.layer.getBoundingClientRect();
+  const layer = layerOf(state);
+  const { width, height } = layer.getBoundingClientRect();
 
   // side of the square whose half-diagonal matches after a 45deg turn
   const side =
@@ -131,7 +142,16 @@ function spawn(state: IRippleState, x: number, y: number) {
     `position:absolute;left:${x}px;top:${y}px;` +
     `width:${side}px;height:${side}px;background:${color};` +
     'will-change:transform,opacity';
-  state.layer.appendChild(wave);
+  layer.appendChild(wave);
+  state.waves++;
+
+  const retire = () => {
+    wave.remove();
+    if (--state.waves) return;
+
+    state.layer?.remove();
+    state.layer = null;
+  };
 
   const grow = wave.animate(
     [
@@ -152,7 +172,7 @@ function spawn(state: IRippleState, x: number, y: number) {
   return async (cancelled: boolean) => {
     if (cancelled && performance.now() - bornAt < CANCELLATION_PERIOD) {
       grow.cancel();
-      wave.remove();
+      retire();
       return;
     }
 
@@ -165,7 +185,7 @@ function spawn(state: IRippleState, x: number, y: number) {
       fill: 'forwards',
     });
     await dissolve.finished.catch(() => {});
-    wave.remove();
+    retire();
   };
 }
 
@@ -173,7 +193,9 @@ export const vRipple: Directive<HTMLElement, TRippleValue> = {
   mounted(host, binding) {
     const state: IRippleState = {
       ...readValue(binding.value),
-      layer: createLayer(host),
+      host,
+      layer: null,
+      waves: 0,
       onPointerDown: () => {},
       onClick: () => {},
     };
@@ -182,7 +204,7 @@ export const vRipple: Directive<HTMLElement, TRippleValue> = {
       if (!state.enabled || event.button !== 0 || prefersReducedMotion())
         return;
 
-      const rect = state.layer.getBoundingClientRect();
+      const rect = layerOf(state).getBoundingClientRect();
       const release = state.options.center
         ? spawn(state, rect.width / 2, rect.height / 2)
         : spawn(state, event.clientX - rect.left, event.clientY - rect.top);
@@ -204,7 +226,7 @@ export const vRipple: Directive<HTMLElement, TRippleValue> = {
       if (!state.enabled || event.detail !== 0 || prefersReducedMotion())
         return;
 
-      const { width, height } = state.layer.getBoundingClientRect();
+      const { width, height } = layerOf(state).getBoundingClientRect();
       spawn(state, width / 2, height / 2)(false);
     };
 
@@ -224,7 +246,7 @@ export const vRipple: Directive<HTMLElement, TRippleValue> = {
 
     host.removeEventListener('pointerdown', state.onPointerDown);
     host.removeEventListener('click', state.onClick);
-    state.layer.remove();
+    state.layer?.remove();
     states.delete(host);
   },
 };

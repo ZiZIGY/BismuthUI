@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, useTemplateRef, watch } from 'vue';
+  import { releaseMotion } from '../../utils/releaseMotion';
   import BFrame from '../frame/Frame.vue';
   import { useDismiss } from './useDismiss';
   import { useListCursor } from './useListCursor';
@@ -53,12 +54,25 @@
    */
   const yielding = ref(false);
 
+  /*
+   * Whether the window is in the page: from the moment the list opens until
+   * its panel has finished leaving. A closed dropdown is its trigger and
+   * nothing else.
+   */
+  const present = ref(open.value);
+
   watch(open, (isOpen) => {
     if (!isOpen) return;
 
+    present.value = true;
     yielding.value = false;
     openList.value = root.value;
   });
+
+  function onPanelGone(panel: Element) {
+    releaseMotion(panel);
+    present.value = false;
+  }
 
   watch(openList, (current) => {
     if (!current || current === root.value) return;
@@ -220,8 +234,15 @@
       :open
     />
 
-    <div class="b-dropdown__viewport">
-      <Transition name="b-dropdown">
+    <div
+      v-if="present"
+      class="b-dropdown__viewport"
+    >
+      <Transition
+        name="b-dropdown"
+        appear
+        @after-leave="onPanelGone"
+      >
         <div
           v-if="open"
           ref="panel"
@@ -332,11 +353,9 @@
   }
 
   /*
-   * The window carries the position and the clip, and stays whether or not
-   * there is anything in it: it has to outlive the panel, since it is the panel
-   * that comes and goes and something has to be doing the clipping while it
-   * does. It costs an empty box — the rows come with the panel, so nothing is
-   * held here between openings.
+   * The window carries the position and the clip. It comes before the panel
+   * and goes after it — something has to be doing the clipping while the
+   * panel slides in and out — and between openings neither is in the page.
    *
    * Nothing about the panel changes size on the way in or out: its bevels are a
    * fixed length, so a panel that shrank would have them eat the whole of it

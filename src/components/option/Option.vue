@@ -1,7 +1,5 @@
 <script setup lang="ts">
-  import { motion } from 'motion-v';
   import { vRipple } from '../../directives/ripple';
-  import { SPRING_SOFT } from '../../theme/motion';
 
   defineOptions({ name: 'BOption', inheritAttrs: false });
 
@@ -16,28 +14,27 @@
    * default on mousedown keeps the focus where it was; the click still fires,
    * and the press wave rides on pointerdown, which is untouched.
    *
-   * A row brings itself in as it comes into view, and that is the whole of it.
-   * It cannot be orchestrated — rows arrive through a slot, and a slot belongs
-   * to whoever wrote it, so the panel it lands in is not on its lookup path —
-   * and it is not seen out either: holding a row past its removal takes a
-   * presence or a transition group, and both cost the list more than the going
-   * is worth. The gap is closed by the panel, in one height and one transition.
+   * A row brings itself in as it mounts, and that is the whole of it — a
+   * keyframe in the stylesheet, nothing per row in script. A list can be long,
+   * and a row that carried an animation state, an observer and a window
+   * listener of its own made every opening pay for all of them. It cannot be
+   * orchestrated — rows arrive through a slot, and a slot belongs to whoever
+   * wrote it, so the panel it lands in is not on its lookup path — and it is
+   * not seen out either: holding a row past its removal takes a presence or a
+   * transition group, and both cost the list more than the going is worth.
+   * The gap is closed by the panel, in one height and one transition.
    */
   defineProps<{ selected?: boolean; disabled?: boolean }>();
 </script>
 
 <template>
-  <motion.button
+  <button
     type="button"
     class="b-option"
     :class="{ 'b-option--selected': selected }"
     :disabled
     :aria-selected="selected"
     tabindex="-1"
-    :initial="{ opacity: 0, y: -16, scale: 0.97 }"
-    :while-in-view="{ opacity: 1, y: 0, scale: 1 }"
-    :in-view-options="{ once: true, amount: 0.4 }"
-    :transition="SPRING_SOFT"
     v-ripple="!disabled"
     v-bind="$attrs"
     @mousedown.prevent
@@ -53,7 +50,7 @@
     </span>
 
     <slot />
-  </motion.button>
+  </button>
 </template>
 
 <style>
@@ -188,7 +185,20 @@
     }
   }
 
+  /* dropped in from a little above, the way the panel itself arrives */
+  .b-option {
+    animation: b-option-in 0.45s cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+
+  @keyframes b-option-in {
+    from {
+      opacity: 0;
+      transform: translateY(-16px) scale(0.97);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .b-option,
     .b-option__mark,
     .b-option__ring {
       animation: none;

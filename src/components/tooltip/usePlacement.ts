@@ -4,7 +4,7 @@ import {
   useRafFn,
   useWindowSize,
 } from '@vueuse/core';
-import { computed, watch, type Ref } from 'vue';
+import { computed, type Ref } from 'vue';
 import type { TTooltipPlacement, TTooltipSide } from '.';
 
 const SIDES: readonly TTooltipSide[] = ['top', 'bottom', 'left', 'right'];
@@ -36,22 +36,25 @@ function clamp(value: number, low: number, high: number) {
  * is centred on the trigger and then held inside the viewport rather than let
  * run off the edge it wasn't even testing against.
  *
- * The trigger is read when the box opens and then every frame until it
- * closes. The bounding's own observers only notice the trigger resizing or
- * the page scrolling — a trigger pushed along by a neighbour appearing or
- * leaving keeps its size, nothing scrolls, and the box would open where the
- * trigger used to be. Hence no listeners of its own either: a closed tooltip
- * has nothing to keep up to date, and an open one is polled anyway.
+ * Meant to be called by the box itself, which is mounted only while shown:
+ * everything here — the observers, the window listener, the per-frame read —
+ * starts with the box and is disposed of with it, so a closed tooltip costs
+ * nothing at all.
+ *
+ * The trigger is read on mount and then every frame. The bounding's own
+ * observers only notice the trigger resizing or the page scrolling — a
+ * trigger pushed along by a neighbour appearing or leaving keeps its size,
+ * nothing scrolls, and the box would stand where the trigger used to be.
+ * Polled anyway, it needs no scroll or resize listeners of its own.
  *
  * The box itself is sized rather than bounded. Its rect carries the entry
  * transform — shrunk and nudged while it fades in — so centring on it lands
  * a few pixels off; the border box is the size it settles at.
  */
 export function usePlacement(
-  trigger: Ref<HTMLElement | null>,
-  panel: Ref<HTMLElement | null>,
-  placement: Ref<TTooltipPlacement>,
-  open: Ref<boolean>,
+  trigger: Readonly<Ref<HTMLElement | null>>,
+  panel: Readonly<Ref<HTMLElement | null>>,
+  placement: Readonly<Ref<TTooltipPlacement>>,
   gap = 8,
   edge = 8
 ) {
@@ -62,16 +65,7 @@ export function usePlacement(
   const box = useElementSize(panel, undefined, { box: 'border-box' });
   const viewport = useWindowSize({ includeScrollbar: false });
 
-  const { pause, resume } = useRafFn(from.update, { immediate: false });
-
-  watch(open, (value) => {
-    if (value) {
-      from.update();
-      resume();
-    } else {
-      pause();
-    }
-  });
+  useRafFn(from.update);
 
   const side = computed<TTooltipSide>(() => {
     const room = {

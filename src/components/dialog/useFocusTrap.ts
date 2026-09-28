@@ -1,22 +1,21 @@
 import { useEventListener } from '@vueuse/core';
-import { type Ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, type Ref } from 'vue';
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), textarea:not([disabled]), ' +
   'input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 /**
- * Keeps the keyboard inside `root` while `active` is true, and hands the
- * focus back to whatever held it once `active` goes false.
+ * Keeps the keyboard inside `root` for as long as the calling component is
+ * mounted, and hands the focus back to whatever held it on unmount.
  *
  * A native `<dialog>` opened with `showModal` does both for free, as part of
  * the top layer. A plain div does neither, and this is what stands in for
  * that half of the top layer's behaviour once the element is an ordinary one.
+ * Tied to the mount rather than to a flag: the window is mounted only while
+ * open, so the listener exists only while there is something to trap.
  */
-export function useFocusTrap(
-  root: Ref<HTMLElement | null>,
-  active: Ref<boolean>
-) {
+export function useFocusTrap(root: Readonly<Ref<HTMLElement | null>>) {
   let held: HTMLElement | null = null;
 
   function focusables() {
@@ -26,7 +25,7 @@ export function useFocusTrap(
   }
 
   useEventListener('keydown', (event: KeyboardEvent) => {
-    if (!active.value || event.key !== 'Tab') return;
+    if (event.key !== 'Tab') return;
 
     const items = focusables();
 
@@ -49,22 +48,13 @@ export function useFocusTrap(
   });
 
   /*
-   * Flushed after the DOM update, or the element is not mounted yet at the
-   * moment this runs and there is nothing to focus. `root` itself is
-   * the fallback sink, carrying `tabindex="-1"` for content with nothing
-   * focusable in it.
+   * `root` itself is the fallback sink, carrying `tabindex="-1"` for content
+   * with nothing focusable in it.
    */
-  watch(
-    active,
-    (value) => {
-      if (value) {
-        held = document.activeElement as HTMLElement | null;
-        (focusables()[0] ?? root.value)?.focus();
-      } else {
-        held?.focus();
-        held = null;
-      }
-    },
-    { flush: 'post' }
-  );
+  onMounted(() => {
+    held = document.activeElement as HTMLElement | null;
+    (focusables()[0] ?? root.value)?.focus();
+  });
+
+  onBeforeUnmount(() => held?.focus());
 }

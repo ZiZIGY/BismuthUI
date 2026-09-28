@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { computed, inject } from 'vue';
+  import { releaseMotion } from '../../utils/releaseMotion';
   import { TABS_CONTEXT, type ITabPanelProps } from '.';
 
   defineOptions({ name: 'BTabPanel' });
@@ -24,7 +25,10 @@
 </script>
 
 <template>
-  <Transition name="b-tab-panel">
+  <Transition
+    name="b-tab-panel"
+    @after-leave="releaseMotion"
+  >
     <div
       v-if="active"
       :id="`${context?.name}-panel-${value}`"

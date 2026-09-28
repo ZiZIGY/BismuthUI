@@ -16,3 +16,8 @@ export interface ITooltipProps {
   delay?: number;
   disabled?: boolean;
 }
+
+export interface ITooltipBubbleProps {
+  trigger: HTMLElement;
+  placement: TTooltipPlacement;
+}

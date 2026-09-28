@@ -14,6 +14,7 @@ declare module 'vue' {
     Autocomplete: typeof import('./src/components/autocomplete/Autocomplete.vue')['default']
     Button: typeof import('./src/components/button/Button.vue')['default']
     Dialog: typeof import('./src/components/dialog/Dialog.vue')['default']
+    DialogWindow: typeof import('./src/components/dialog/DialogWindow.vue')['default']
     Divider: typeof import('./src/components/divider/Divider.vue')['default']
     Dropdown: typeof import('./src/components/dropdown/Dropdown.vue')['default']
     Field: typeof import('./src/components/field/Field.vue')['default']
@@ -40,5 +41,6 @@ declare module 'vue' {
     ThemeToggle: typeof import('./src/components/theme-toggle/ThemeToggle.vue')['default']
     Thumb: typeof import('./src/components/thumb/Thumb.vue')['default']
     Tooltip: typeof import('./src/components/tooltip/Tooltip.vue')['default']
+    TooltipBubble: typeof import('./src/components/tooltip/TooltipBubble.vue')['default']
   }
 }
