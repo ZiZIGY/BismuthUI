@@ -44,8 +44,8 @@ function clamp(value: number, low: number, high: number) {
  * has nothing to keep up to date, and an open one is polled anyway.
  *
  * The box itself is sized rather than bounded. Its rect carries the entry
- * transform — shrunk and nudged while closed — so centring on it lands a few
- * pixels off; the border box is the size it settles at.
+ * transform — shrunk and nudged while it fades in — so centring on it lands
+ * a few pixels off; the border box is the size it settles at.
  */
 export function usePlacement(
   trigger: Ref<HTMLElement | null>,

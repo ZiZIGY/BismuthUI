@@ -18,6 +18,10 @@
    * clips, transforms or scrolls would otherwise cut a fixed-position box off
    * or carry it away from the trigger it is meant to sit beside.
    *
+   * Mounted only while shown: `<Transition>` puts it in the page on the way in
+   * and takes it out once it has faded, so a page of tooltips is a page of
+   * triggers and nothing else.
+   *
    * Non-interactive throughout — `pointer-events: none` always, not merely
    * before it shows the way the bubble's does. The bubble sits over dead space
    * inside its own component; this floats over whatever the page happens to
@@ -76,24 +80,26 @@
     <slot name="trigger" />
 
     <Teleport to="body">
-      <span
-        :id="id"
-        ref="panel"
-        class="b-tooltip__bubble"
-        :class="{ 'b-tooltip__bubble--open': open }"
-        :data-side="side"
-        role="tooltip"
-        :style="style"
-      >
-        <BFrame
-          :band="false"
-          :glow="false"
-        />
+      <Transition name="b-tooltip">
+        <span
+          v-if="open"
+          :id="id"
+          ref="panel"
+          class="b-tooltip__bubble"
+          :data-side="side"
+          role="tooltip"
+          :style="style"
+        >
+          <BFrame
+            :band="false"
+            :glow="false"
+          />
 
-        <span class="b-tooltip__bubble-text">
-          <slot />
+          <span class="b-tooltip__bubble-text">
+            <slot />
+          </span>
         </span>
-      </span>
+      </Transition>
     </Teleport>
   </span>
 </template>
@@ -129,56 +135,45 @@
     min-width: calc(var(--bubble-height) * 1.4);
     height: var(--bubble-height);
     padding-inline: calc(var(--bubble-height) * 0.6);
-    opacity: 0;
-    /*
-     * `visibility` rather than `display: none`: a box that is never rendered
-     * can never be measured, and `usePlacement` needs this element's own size
-     * at every moment, not just once it is finally shown. Kept laid out and
-     * merely invisible, it stays measurable throughout — no first-frame flash
-     * at the wrong size, no `nextTick` to wait out.
-     */
-    visibility: hidden;
     pointer-events: none;
-    transform: scale(0.94);
+  }
+
+  .b-tooltip-enter-active,
+  .b-tooltip-leave-active {
     transition:
       opacity 0.16s ease,
-      transform 0.16s cubic-bezier(0.2, 0.8, 0.3, 1),
-      visibility 0s linear 0.16s;
+      transform 0.16s cubic-bezier(0.2, 0.8, 0.3, 1);
   }
 
   /*
-   * `transform` is left to the per-side rules further down: `[data-side]` is
-   * always present once mounted, so a value written here would only ever be
-   * the one those rules override — stating it twice invites the two to drift.
+   * Faded in from nothing, which also covers its first frame: the box is
+   * mounted before it has been measured, and the placement worked out from
+   * a size of zero is only ever drawn at zero opacity.
    */
-  .b-tooltip__bubble--open {
-    opacity: 1;
-    visibility: visible;
-    transition:
-      opacity 0.16s ease,
-      transform 0.16s cubic-bezier(0.2, 0.8, 0.3, 1),
-      visibility 0s;
+  .b-tooltip-enter-from,
+  .b-tooltip-leave-to {
+    opacity: 0;
   }
 
   /* grown in from a few pixels back the way it came, the bubble's own move */
-  .b-tooltip__bubble[data-side='top'] {
+  .b-tooltip-enter-from[data-side='top'],
+  .b-tooltip-leave-to[data-side='top'] {
     transform: translateY(4px) scale(0.94);
   }
 
-  .b-tooltip__bubble[data-side='bottom'] {
+  .b-tooltip-enter-from[data-side='bottom'],
+  .b-tooltip-leave-to[data-side='bottom'] {
     transform: translateY(-4px) scale(0.94);
   }
 
-  .b-tooltip__bubble[data-side='left'] {
+  .b-tooltip-enter-from[data-side='left'],
+  .b-tooltip-leave-to[data-side='left'] {
     transform: translateX(4px) scale(0.94);
   }
 
-  .b-tooltip__bubble[data-side='right'] {
+  .b-tooltip-enter-from[data-side='right'],
+  .b-tooltip-leave-to[data-side='right'] {
     transform: translateX(-4px) scale(0.94);
-  }
-
-  .b-tooltip__bubble--open[data-side] {
-    transform: translate(0, 0) scale(1);
   }
 
   /*
@@ -243,15 +238,14 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .b-tooltip__bubble {
-      transition:
-        opacity 0.16s ease,
-        visibility 0s linear 0.16s;
-      transform: none;
+    .b-tooltip-enter-active,
+    .b-tooltip-leave-active {
+      transition: opacity 0.16s ease;
     }
 
-    .b-tooltip__bubble--open {
-      transition: opacity 0.16s ease;
+    .b-tooltip-enter-from[data-side],
+    .b-tooltip-leave-to[data-side] {
+      transform: none;
     }
   }
 </style>
